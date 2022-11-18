@@ -1,9 +1,9 @@
+const colors = require('colors');
 const mysql = require('mysql')
 const config = require('../config')
 
 const connection = mysql.createConnection({
   host: config.HOST,
-  socketPath: config.SOCKET,
   port: config.PORT,
   user: config.DBUSER,
   password: config.DBPASSWORD,
@@ -12,9 +12,9 @@ const connection = mysql.createConnection({
 
 connection.connect((error) => {
   if(error) {
-    return console.log('Ошибка подключения к БД!');
+    return console.log(colors.red.underline('Database connection error!'));
   } else {
-    return console.log('Подлючение успешно!');
+    return console.log(colors.green('Connection successful!'));
   }
 })
 
