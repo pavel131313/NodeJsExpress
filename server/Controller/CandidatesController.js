@@ -4,7 +4,6 @@ const response = require('./../response')
 const db = require('./../settings/db')
 
 exports.getAllCandidates = (req, res) => {
-
   db.query(`SELECT 
                 users.id, 
                 users.email, 
@@ -20,8 +19,7 @@ exports.getAllCandidates = (req, res) => {
                     ON users_metadata.user_id = users.id 
             ORDER BY candidates.created_at 
             DESC 
-            LIMIT 20 
-                OFFSET ${req.params.offset}`,
+            LIMIT 999999`,
     (error, rows, fields) => {
     if(error) {
       response.status(400, error, res)

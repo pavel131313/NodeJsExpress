@@ -5,6 +5,6 @@ module.exports = (app) => {
   const cors = require('cors')
   
   app
-    .get('/api/candidates/:offset', cors(), candidatesController.getAllCandidates)
+    .get('/api/candidates', cors(), candidatesController.getAllCandidates)
 
 }

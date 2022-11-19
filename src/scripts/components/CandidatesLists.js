@@ -1,10 +1,25 @@
 import {useAxios} from "use-axios-client";
+import React, {useEffect, useState} from "react";
 
 function CandidatesList() {
 
+  const [page, setPage] = useEffect(0);
+  const [pages, setPages] = useEffect(0);
+  const perPage = 20;
+
   const {data, error, loading} = useAxios({
-    url: 'http://localhost:3500/api/candidates/1'
+    url: 'http://localhost:3500/api/candidates'
   });
+  useEffect(() => {
+    setPages(Math.floor(data.values.length / perPage))
+  },[data.values])
+
+  const handlePageClick = (event) => {
+    let page = event.selected;
+    setPage({page})
+  }
+
+  const items = data.values.slice(page * perPage, (page + 1) * perPage);
 
   if (loading || !data) return (
     <div
@@ -49,7 +64,7 @@ function CandidatesList() {
             </tr>
             </thead>
             <tbody>
-            {data.values && data.values.map(item => (
+            {items && items.map(item => (
               <tr className={'bg-white border-b'} key={item.id}>
                 <td className={'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'}>1</td>
                 <td className={'text-sm text-gray-900 px-6 py-4 whitespace-nowrap'}>
@@ -132,7 +147,8 @@ function CandidatesList() {
                className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
           </li>
           <li>
-            <a href="#"
+            <a onClick={() => handlePageClick()}
+              href="#"
                className="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
               <span className="sr-only">Next</span>
               <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
