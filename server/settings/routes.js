@@ -2,9 +2,9 @@
 
 module.exports = (app) => {
   const candidatesController = require('./../Controller/CandidatesController')
-
+  const cors = require('cors')
+  
   app
-    .route('/api/candidates')
-    .get(candidatesController.getAllCandidates)
+    .get('/api/candidates/:offset', cors(), candidatesController.getAllCandidates)
 
 }
