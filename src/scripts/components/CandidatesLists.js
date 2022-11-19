@@ -3,16 +3,17 @@ import React, {useEffect, useState} from "react";
 
 function CandidatesList() {
 
-  const [page, setPage] = useEffect(0);
-  const [pages, setPages] = useEffect(0);
+  const [page, setPage] = useState(0);
+  const [pages, setPages] = useState(0);
   const perPage = 20;
 
   const {data, error, loading} = useAxios({
     url: 'http://localhost:3500/api/candidates'
   });
+
   useEffect(() => {
-    setPages(Math.floor(data.values.length / perPage))
-  },[data.values])
+    data.values && setPages(Math.floor(data.values.length / perPage))
+  },[data])
 
   const handlePageClick = (event) => {
     let page = event.selected;
@@ -20,6 +21,7 @@ function CandidatesList() {
   }
 
   const items = data.values.slice(page * perPage, (page + 1) * perPage);
+
 
   if (loading || !data) return (
     <div
