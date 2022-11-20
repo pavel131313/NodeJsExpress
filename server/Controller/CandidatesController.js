@@ -9,9 +9,8 @@ exports.getAllCandidates = (req, res) => {
                 users.email, 
                 candidates.landline, 
                 candidates.mobile, 
-                candidates.created_at, 
-                users_metadata.first_name, 
-                users_metadata.last_name 
+                candidates.created_at,
+                CONCAT(users_metadata.first_name, ' ',users_metadata.last_name) as full_name 
             FROM users 
                 INNER JOIN candidates 
                     ON candidates.user_id = users.id 

@@ -1,23 +1,29 @@
-import { useAxios } from "use-axios-client";
-import React, { useEffect, useState } from "react";
+import {useAxios} from "use-axios-client";
+import React, {useState} from "react";
 
 function CandidatesList() {
   const [page, setPage] = useState(0);
+  // const [search, setSearch] = useState([]);
   const perPage = 20;
-
-  const { data, error, loading } = useAxios({
-    url: "http://localhost:3500/api/candidates",
-  });
-
-  const { values } = data || {};
-
-  const pages = values?.length ? Math.floor(values.length / perPage) : 0;
-  // const items = values?.length ? values.slice(page * perPage, (page + 1) * perPage) : [];
+  const {data, error, loading} = useAxios({url: "http://localhost:3500/api/candidates"});
+  const {values} = data || {};
+  const pages = values?.length ? Math.ceil(values.length / perPage) : 0;
   const items = values?.slice(page * perPage, (page + 1) * perPage);
+
+  const handleChange = async event => {
+    const searchTerm = event.target.value.toLowerCase()
+    const result = values?.filter(value => {
+      return value.email.toLowerCase().match(new RegExp(searchTerm, 'g')) ||
+        value.full_name.toLowerCase().match(new RegExp(searchTerm, 'g'))
+    })
+
+    // setSearch(result);
+  };
 
   if (loading || !data)
     return (
-      <div className="w-full flex items-center justify-center px-4 py-2 font-semibold leading-6 shadow text-white bg-gray-800">
+      <div
+        className="w-full flex items-center justify-center px-4 py-2 font-semibold leading-6 shadow text-white bg-gray-800">
         <svg
           className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
           xmlns="http://www.w3.org/2000/svg"
@@ -46,154 +52,169 @@ function CandidatesList() {
 
   return (
     <div className={"flex flex-col"}>
+
+      <div className={'flex items-center '}>
+        <div/>
+        <div className={'flex flex-row items-center'}>
+          <input
+            onChange={handleChange}
+            type="text"
+            className={'font-large bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'}
+            placeholder="Search"/>
+        </div>
+      </div>
+
       <div className={"overflow-hidden"}>
         <table className={"min-w-full"}>
           <thead className={"border-b bg-gray-800 text-left"}>
-            <tr>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                #
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Name
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Email
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Landline
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Mobile
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Options
-              </th>
-            </tr>
+          <tr>
+            <th
+              scope="col"
+              className={'text-sm font-medium text-white px-6 py-4 w-10'}
+            >
+              #
+            </th>
+            <th
+              scope="col"
+              className={'text-sm font-medium text-white px-6 py-4 w-1/5'}
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              className={'text-sm font-medium text-white px-6 py-4 w-1/5'}
+            >
+              Email
+            </th>
+            <th
+              scope="col"
+              className={'text-sm font-medium text-white px-6 py-4 w-1/5'}
+            >
+              Landline
+            </th>
+            <th
+              scope="col"
+              className={'text-sm font-medium text-white px-6 py-4 w-1/5'}
+            >
+              Mobile
+            </th>
+            <th
+              scope="col"
+              className={'text-sm font-medium text-white px-6 py-4 w-48'}
+            >
+              Options
+            </th>
+          </tr>
           </thead>
           <tbody>
-            {items &&
-              items.map((item) => (
-                <tr className={"bg-white border-b"} key={item.id}>
-                  <td
-                    className={
-                      "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                    }
-                  >
-                    1
-                  </td>
-                  <td
-                    className={
-                      "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
-                    }
-                  >
-                    {item.first_name + " " + item.last_name}
-                  </td>
-                  <td
-                    className={
-                      "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
-                    }
-                  >
-                    {item.email}
-                  </td>
-                  <td
-                    className={
-                      "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
-                    }
-                  >
-                    {item.landline}
-                  </td>
-                  <td
-                    className={
-                      "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
-                    }
-                  >
-                    {item.mobile}
-                  </td>
-                  <td
-                    className={
-                      "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
-                    }
-                  >
-                    <button className="py-2 font-semibold text-sm text-blue-600">
-                      View
-                    </button>
-                    <button className="mx-2 px-4 py-2 font-semibold text-sm bg-green-700 text-white rounded-lg shadow-sm">
-                      Approve
-                    </button>
-                    <button className="px-4 py-2 font-semibold text-sm bg-red-600 text-white rounded-lg shadow-sm">
-                      Decline
-                    </button>
-                  </td>
-                </tr>
-              ))}
+          {items &&
+            items.map((item, i) => (
+              <tr className={"bg-white border-b"} key={item.id}>
+                <td
+                  className={
+                    "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  }
+                >
+                  {(((page + 1) * perPage) - perPage) + (i + 1)}
+                </td>
+                <td
+                  className={
+                    "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
+                  }
+                >
+                  {item.full_name}
+                </td>
+                <td
+                  className={
+                    "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
+                  }
+                >
+                  {item.email}
+                </td>
+                <td
+                  className={
+                    "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
+                  }
+                >
+                  {item.landline}
+                </td>
+                <td
+                  className={
+                    "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
+                  }
+                >
+                  {item.mobile}
+                </td>
+                <td
+                  className={
+                    "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
+                  }
+                >
+                  <button className="py-2 font-semibold text-sm text-blue-600">
+                    View
+                  </button>
+                  <button className="mx-2 px-4 py-2 font-semibold text-sm bg-green-700 text-white rounded-lg shadow-sm">
+                    Approve
+                  </button>
+                  <button className="px-4 py-2 font-semibold text-sm bg-red-600 text-white rounded-lg shadow-sm">
+                    Decline
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
           <tfoot className={"border-b bg-gray-800 text-left"}>
-            <tr>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                #
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Name
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Email
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Landline
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Mobile
-              </th>
-              <th
-                scope="col"
-                className={"text-sm font-medium text-white px-6 py-4"}
-              >
-                Options
-              </th>
-            </tr>
+          <tr>
+            <th
+              scope="col"
+              className={"text-sm font-medium text-white px-6 py-4"}
+            >
+              #
+            </th>
+            <th
+              scope="col"
+              className={"text-sm font-medium text-white px-6 py-4"}
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              className={"text-sm font-medium text-white px-6 py-4"}
+            >
+              Email
+            </th>
+            <th
+              scope="col"
+              className={"text-sm font-medium text-white px-6 py-4"}
+            >
+              Landline
+            </th>
+            <th
+              scope="col"
+              className={"text-sm font-medium text-white px-6 py-4"}
+            >
+              Mobile
+            </th>
+            <th
+              scope="col"
+              className={"text-sm font-medium text-white px-6 py-4"}
+            >
+              Options
+            </th>
+          </tr>
           </tfoot>
         </table>
       </div>
 
       <nav aria-label="Page navigation example" className={"text-right mt-5"}>
         <ul className="inline-flex items-center -space-x-px">
+          <li className={'px-4'}>
+            {values?.length && values?.length.toLocaleString()} items
+          </li>
           <li>
-            <a
-              href="#"
-              className="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            <button
+              onClick={() => page >= 1 && setPage((prev) => prev - 1)}
+              className={`${page === 0 && 'cursor-not-allowed'} block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
             >
               <span className="sr-only">Previous</span>
               <svg
@@ -209,53 +230,15 @@ function CandidatesList() {
                   clipRule="evenodd"
                 />
               </svg>
-            </a>
+            </button>
           </li>
-          <li>
-            <a
-              href="#"
-              className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              1
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              2
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              aria-current="page"
-              className="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-            >
-              3
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              4
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              5
-            </a>
+          <li className={'px-4'}>
+            {`${page + 1} of ${pages}`}
           </li>
           <li>
             <button
-              onClick={() => setPage((prev) => prev + 1)}
-              className="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              onClick={() => page < pages && setPage((prev) => prev < pages && prev + 1)}
+              className={`${page === pages && 'cursor-not-allowed'} block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
             >
               <span className="sr-only">Next</span>
               <svg
