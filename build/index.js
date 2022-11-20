@@ -20,7 +20,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function CandidatesList() {
   const [page, setPage] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(0);
-  // const [search, setSearch] = useState([]);
+  const [search, setSearch] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const perPage = 20;
   const {
     data,
@@ -33,16 +33,14 @@ function CandidatesList() {
     values
   } = data || {};
   const pages = values !== null && values !== void 0 && values.length ? Math.ceil(values.length / perPage) : 0;
-  const items = values === null || values === void 0 ? void 0 : values.slice(page * perPage, (page + 1) * perPage);
+  const items = search.length ? search : values === null || values === void 0 ? void 0 : values.slice(page * perPage, (page + 1) * perPage);
   const handleChange = async event => {
     const searchTerm = event.target.value.toLowerCase();
     const result = values === null || values === void 0 ? void 0 : values.filter(value => {
       return value.email.toLowerCase().match(new RegExp(searchTerm, 'g')) || value.full_name.toLowerCase().match(new RegExp(searchTerm, 'g'));
     });
-
-    // setSearch(result);
+    setSearch(result);
   };
-
   if (loading || !data) return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "w-full flex items-center justify-center px-4 py-2 font-semibold leading-6 shadow text-white bg-gray-800"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
@@ -62,10 +60,9 @@ function CandidatesList() {
     fill: "currentColor",
     d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
   })), "Processing...");
-  if (error) return "Error!";
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "flex flex-col"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, error.message), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: 'flex items-center '
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: 'flex flex-row items-center'

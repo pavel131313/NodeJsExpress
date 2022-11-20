@@ -3,21 +3,20 @@ import React, {useState} from "react";
 
 function CandidatesList() {
   const [page, setPage] = useState(0);
-  // const [search, setSearch] = useState([]);
+  const [search, setSearch] = useState([]);
   const perPage = 20;
   const {data, error, loading} = useAxios({url: "http://localhost:3500/api/candidates"});
   const {values} = data || {};
   const pages = values?.length ? Math.ceil(values.length / perPage) : 0;
-  const items = values?.slice(page * perPage, (page + 1) * perPage);
+  const items = search.length ? search : values?.slice(page * perPage, (page + 1) * perPage);
 
   const handleChange = async event => {
-    const searchTerm = event.target.value.toLowerCase()
-    const result = values?.filter(value => {
-      return value.email.toLowerCase().match(new RegExp(searchTerm, 'g')) ||
-        value.full_name.toLowerCase().match(new RegExp(searchTerm, 'g'))
-    })
-
-    // setSearch(result);
+      const searchTerm = event.target.value.toLowerCase()
+      const result = values?.filter(value => {
+        return value.email.toLowerCase().match(new RegExp(searchTerm, 'g')) ||
+          value.full_name.toLowerCase().match(new RegExp(searchTerm, 'g'))
+      })
+      setSearch(result);
   };
 
   if (loading || !data)
@@ -48,11 +47,11 @@ function CandidatesList() {
       </div>
     );
 
-  if (error) return "Error!";
+
 
   return (
     <div className={"flex flex-col"}>
-
+      {error && <div>{error.message}</div>}
       <div className={'flex items-center '}>
         <div/>
         <div className={'flex flex-row items-center'}>
