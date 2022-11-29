@@ -1,7 +1,8 @@
 import {useAxios} from "use-axios-client";
 import React, {useState} from "react";
+import {Link} from "react-router-dom";
 
-function CandidatesList() {
+const CandidatesList = () => {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState([]);
   const perPage = 20;
@@ -11,12 +12,12 @@ function CandidatesList() {
   const items = search.length ? search : values?.slice(page * perPage, (page + 1) * perPage);
 
   const handleChange = async event => {
-      const searchTerm = event.target.value.toLowerCase()
-      const result = values?.filter(value => {
-        return value.email.toLowerCase().match(new RegExp(searchTerm, 'g')) ||
-          value.full_name.toLowerCase().match(new RegExp(searchTerm, 'g'))
-      })
-      setSearch(result);
+    const searchTerm = event.target.value.toLowerCase()
+    const result = values?.filter(value => {
+      return value.email.toLowerCase().match(new RegExp(searchTerm, 'g')) ||
+        value.full_name.toLowerCase().match(new RegExp(searchTerm, 'g'))
+    })
+    setSearch(result);
   };
 
   if (loading || !data)
@@ -46,7 +47,6 @@ function CandidatesList() {
         Processing...
       </div>
     );
-
 
 
   return (
@@ -99,6 +99,12 @@ function CandidatesList() {
             </th>
             <th
               scope="col"
+              className={'text-sm font-medium text-white px-6 py-4 w-1/5'}
+            >
+              Site
+            </th>
+            <th
+              scope="col"
               className={'text-sm font-medium text-white px-6 py-4 w-48'}
             >
               Options
@@ -106,8 +112,9 @@ function CandidatesList() {
           </tr>
           </thead>
           <tbody>
-          {items &&
-            items.map((item, i) => (
+
+            {items &&
+              items.map((item, i) => (
               <tr className={"bg-white border-b"} key={item.id}>
                 <td
                   className={
@@ -149,10 +156,18 @@ function CandidatesList() {
                     "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
                   }
                 >
-                  <button className="py-2 font-semibold text-sm text-blue-600">
+                  {item.site}
+                </td>
+                <td
+                  className={
+                    "text-sm text-gray-900 px-6 py-4 whitespace-nowrap"
+                  }
+                >
+                  <Link to={item.id.toString()} className="py-2 font-semibold text-sm text-blue-600">
                     View
-                  </button>
-                  <button className="mx-2 px-4 py-2 font-semibold text-sm bg-green-700 text-white rounded-lg shadow-sm">
+                  </Link>
+                  <button
+                    className="mx-2 px-4 py-2 font-semibold text-sm bg-green-700 text-white rounded-lg shadow-sm">
                     Approve
                   </button>
                   <button className="px-4 py-2 font-semibold text-sm bg-red-600 text-white rounded-lg shadow-sm">
@@ -198,6 +213,12 @@ function CandidatesList() {
               scope="col"
               className={"text-sm font-medium text-white px-6 py-4"}
             >
+              Site
+            </th>
+            <th
+              scope="col"
+              className={"text-sm font-medium text-white px-6 py-4"}
+            >
               Options
             </th>
           </tr>
@@ -232,7 +253,7 @@ function CandidatesList() {
             </button>
           </li>
           <li className={'px-4'}>
-            {`${page + 1} of ${pages}`}
+            {`${page + 1} of ${pages.toLocaleString()}`}
           </li>
           <li>
             <button

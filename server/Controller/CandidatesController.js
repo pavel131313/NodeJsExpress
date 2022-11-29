@@ -4,11 +4,13 @@ const response = require('./../response')
 const db = require('./../settings/db')
 
 exports.getAllCandidates = (req, res) => {
+  const id = req.params.id
   db.query(`SELECT 
                 users.id, 
                 users.email, 
                 candidates.landline, 
                 candidates.mobile, 
+                candidates.site, 
                 candidates.created_at,
                 CONCAT(users_metadata.first_name, ' ',users_metadata.last_name) as full_name 
             FROM users 
